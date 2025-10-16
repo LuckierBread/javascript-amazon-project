@@ -1,4 +1,4 @@
-import {cart} from '../data/cart.js'
+import {cart, addToCart,} from '../data/cart.js'
 import {products} from '../data/products.js'
 let productsHTML = '';
 const productsContainer = document.querySelector('.js-products-grid');
@@ -59,29 +59,15 @@ productsContainer.innerHTML = productsHTML;
 document.querySelectorAll('.js-add-to-cart-button').forEach(button => {
     button.addEventListener('click', ()=>{
         const productId = button.dataset.productId;
-        let itemInCart = false
-
-        cart.forEach(item=>{
-            if(item.productId === productId){
-                item.quantity++;
-                itemInCart = true;
-            }
-        })
-
-        if(!itemInCart){
-            cart.push({
-                productId: productId,
-                quantity: 1
-            })
-        }
-
+        addToCart(productId)
         updateCartQuantity()
     })
 })
 
 updateCartQuantity()
 
-function updateCartQuantity(){
+//This function updates the page not the cart so we are keeping it here
+function updateCartQuantity(){ 
     let cartCount = 0;
         cart.forEach(item=>{
             cartCount += item.quantity;
