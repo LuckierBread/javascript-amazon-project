@@ -4,7 +4,6 @@ import {formatCurrency} from './utils/money.js'
 
 let productListHTML = ''
 const orderSummeryElement = document.querySelector(".js-order-summary")
-console.log(cart)
 
 cart.forEach((cartItem)=>{
     let matchingItem
@@ -13,7 +12,7 @@ cart.forEach((cartItem)=>{
         if(product.id===cartItem.id)
             matchingItem=product
     })
-    
+
     productListHTML+=`
     <div class="cart-item-container js-cart-item-container-${matchingItem.id}">
             <div class="delivery-date">
@@ -93,6 +92,7 @@ cart.forEach((cartItem)=>{
           </div>
     `
 })
+updateCartQuantity()
 
 orderSummeryElement.innerHTML = productListHTML
 
@@ -102,5 +102,14 @@ document.querySelectorAll('.js-delete-link')
         const productId = link.dataset.productId
         removeFromCart(productId)
         document.querySelector(`.js-cart-item-container-${productId}`).remove()
+        updateCartQuantity()
     })
 })
+
+function updateCartQuantity(){ 
+    let cartCount = 0;
+        cart.forEach(item=>{
+            cartCount += item.quantity;
+        })
+        document.querySelector(".js-cart-quantity").innerHTML = `${String(cartCount)} items`;
+}
