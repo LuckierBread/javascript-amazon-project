@@ -4,6 +4,7 @@ import {formatCurrency} from './utils/money.js'
 
 let productListHTML = ''
 const orderSummeryElement = document.querySelector(".js-order-summary")
+console.log(cart)
 
 cart.forEach((cartItem)=>{
     let matchingItem
@@ -12,7 +13,7 @@ cart.forEach((cartItem)=>{
         if(product.id===cartItem.id)
             matchingItem=product
     })
-
+    
     productListHTML+=`
     <div class="cart-item-container js-cart-item-container-${matchingItem.id}">
             <div class="delivery-date">
