@@ -4,7 +4,7 @@ export function addToCart(productId) {
     let itemInCart = false
 
     cart.forEach(item=>{
-        if(item.productId === productId){
+        if(item.id === productId){
             item.quantity++;
             itemInCart = true;
         }
