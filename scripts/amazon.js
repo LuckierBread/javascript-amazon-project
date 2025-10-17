@@ -74,5 +74,5 @@ function updateCartQuantity(){
         cart.forEach(item=>{
             cartCount += item.quantity;
         })
-        document.querySelector(".js-cart-quantity").innerHTML = String(cartCount);
+        document.querySelector(".js-cart-quantity").innerHTML = cartCount>0?String(cartCount):'';
 }
