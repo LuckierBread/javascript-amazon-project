@@ -62,11 +62,9 @@ function deliveryOptionsHTML(productId){
   let deliveryHTML = ''
 
   deliveryOptions.forEach((option)=>{
-    console.log(option.priceCents)
     const priceString = option.priceCents===0
     ?'FREE Shipping'
     :formatCurrency(option.priceCents)
-    console.log(option)
 
     deliveryHTML += `
     <div class="delivery-option">
