@@ -42,6 +42,15 @@ export function getCartQuantity(){
     return cartCount;
 }
 
+export function updateCartQuantity(productId,newQuantity){
+    cart.forEach((cartItem)=>{
+        if(cartItem.id === productId) {
+            cartItem.quantity=newQuantity
+        }
+        saveToStorage();
+    })
+}
+
 function saveToStorage(){
     localStorage.setItem('cart',JSON.stringify(cart))
 }
