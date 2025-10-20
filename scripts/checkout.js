@@ -1,4 +1,4 @@
-import {cart, getCartQuantity, removeFromCart} from '../data/cart.js'
+import {cart, getCartQuantity, updateCartQuantity, removeFromCart} from '../data/cart.js'
 import {products} from '../data/products.js'
 import {formatCurrency} from './utils/money.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'
@@ -7,6 +7,8 @@ import {deliveryOptions} from '../data/deliveryOptions.js'
 let productListHTML = ''
 const orderSummeryElement = document.querySelector(".js-order-summary")
 
+
+//Generate HTML for each product container
 cart.forEach((cartItem)=>{
     let matchingItem
 
@@ -34,10 +36,19 @@ cart.forEach((cartItem)=>{
                 </div>
                 <div class="product-quantity">
                   <span>
-                    Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+                    Quantity: <span class="quantity-label js-quantity-label-${matchingItem.id}"
+                     data-product-id="${matchingItem.id}">
+                     ${cartItem.quantity}
+                     </span>
                   </span>
-                  <span class="update-quantity-link link-primary js-update-quantity-link" data-product-id="${matchingItem.id}">
+                  <span class="update-quantity-link link-primary js-update-quantity-link js-update-${matchingItem.id}" 
+                  data-product-id="${matchingItem.id}">
                     Update
+                  </span>
+                  <input class="quantity-input js-quantity-input js-quantity-input-${matchingItem.id}"
+                  data-product-id="${matchingItem.id}">
+                  <span class="save-quantity-link js-save-quantity-link link-primary" 
+                  data-product-id="${matchingItem.id}">Save
                   </span>
                   <span class="delete-quantity-link link-primary js-delete-link"
                   data-product-id="${matchingItem.id}">
@@ -57,6 +68,7 @@ cart.forEach((cartItem)=>{
     `
 })
 
+//generates HTML for the devlivery options in each product container
 function deliveryOptionsHTML(productId){
   let today= dayjs()
   let deliveryHTML = ''
@@ -84,29 +96,61 @@ function deliveryOptionsHTML(productId){
   return deliveryHTML
 }
 
-updateCartQuantity()
+updateCartHeaderQuantity()
 
 orderSummeryElement.innerHTML = productListHTML
 
+//Delete button, removes order from cart.
 document.querySelectorAll('.js-delete-link')
 .forEach((link)=>{
     link.addEventListener('click',()=>{
         const productId = link.dataset.productId
         removeFromCart(productId)
         document.querySelector(`.js-cart-item-container-${productId}`).remove()
-        updateCartQuantity()
+        updateCartHeaderQuantity()
     })
 })
 
+//adds listener to update link that shows the quantity input and save link
 document.querySelectorAll('.js-update-quantity-link')
 .forEach((link)=>{
   link.addEventListener('click',()=>{
     const productId = link.dataset.productId
-    console.log(productId)
+    const cartItemContainer = document.querySelector(`.js-cart-item-container-${productId}`)
+    cartItemContainer.classList.add('is-editing-quantity')
   })
 })
 
-function updateCartQuantity(){ 
+//adds listener to save link to update the cart quantity and return to defult state
+document.querySelectorAll('.js-save-quantity-link')
+.forEach((link)=>{
+  link.addEventListener('click',()=>saveChanges(link))
+  })
+
+document.querySelectorAll('.js-quantity-input')
+.forEach((element)=>{
+  element.addEventListener('keydown',(event)=>{
+    if(event.key==='Enter') saveChanges(element)
+  })
+})
+
+function saveChanges(link){
+  console.log(cart)
+  const productId = link.dataset.productId
+  const cartItemContainer = document.querySelector(`.js-cart-item-container-${productId}`)
+  cartItemContainer.classList.remove('is-editing-quantity')
+
+  const inputElement = document.querySelector(`.js-quantity-input-${productId}`)
+  const newValue = parseInt(inputElement.value)
+  updateCartQuantity(productId, newValue)
+
+
+  const quantityElement = document.querySelector(`.js-quantity-label-${productId}`)
+  quantityElement.innerHTML = newValue
+  updateCartHeaderQuantity()
+}
+
+function updateCartHeaderQuantity(){
   const cartCount = getCartQuantity();
         document.querySelector(".js-cart-quantity").innerHTML = `${String(cartCount)} items`;
 }
