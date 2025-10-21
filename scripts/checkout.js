@@ -17,10 +17,19 @@ cart.forEach((cartItem)=>{
             matchingItem=product
     })
 
+    let dateString = dayjs()
+    console.log(dateString)
+    deliveryOptions.forEach((option)=>{
+      if(option.id === cartItem.deliveryOptionId) {
+        dateString = dateString.add(option.days,'day')
+        console.log(dateString)
+      }
+    })
+
     productListHTML+=`
     <div class="cart-item-container js-cart-item-container-${matchingItem.id}">
             <div class="delivery-date">
-              Delivery date: Tuesday, June 21
+              Delivery date: ${dateString.format('dddd, MMMM D')}
             </div>
 
             <div class="cart-item-details-grid">
@@ -61,7 +70,7 @@ cart.forEach((cartItem)=>{
                 <div class="delivery-options-title">
                   Choose a delivery option:
                 </div>
-                ${deliveryOptionsHTML(matchingItem.id)}
+                ${deliveryOptionsHTML(matchingItem.id,cartItem)}
               </div>
             </div>
           </div>
@@ -69,18 +78,21 @@ cart.forEach((cartItem)=>{
 })
 
 //generates HTML for the devlivery options in each product container
-function deliveryOptionsHTML(productId){
+function deliveryOptionsHTML(productId,cartItem){
   let today= dayjs()
   let deliveryHTML = ''
 
   deliveryOptions.forEach((option)=>{
     const priceString = option.priceCents===0
-    ?'FREE Shipping'
-    :formatCurrency(option.priceCents)
+    ?'FREE '
+    :formatCurrency(option.priceCents)+' - '
+
+    const isChecked = option.id === cartItem.deliveryOptionId  
 
     deliveryHTML += `
     <div class="delivery-option">
       <input type="radio"
+      ${isChecked?'checked':''}
         class="delivery-option-input"
         name="delivery-option-${productId}">
       <div>
@@ -88,7 +100,7 @@ function deliveryOptionsHTML(productId){
           ${today.add(option.days,'day').format('dddd, MMMM D')}
         </div>
         <div class="delivery-option-price">
-          ${priceString}
+          ${priceString}Shipping
         </div>
       </div>
     </div>`
