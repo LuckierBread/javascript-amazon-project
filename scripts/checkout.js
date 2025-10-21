@@ -1,4 +1,4 @@
-import {cart, getCartQuantity, updateCartQuantity, removeFromCart} from '../data/cart.js'
+import {cart, updateDeliveryOption, getCartQuantity, updateCartQuantity, removeFromCart} from '../data/cart.js'
 import {products} from '../data/products.js'
 import {formatCurrency} from './utils/money.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'
@@ -18,11 +18,9 @@ cart.forEach((cartItem)=>{
     })
 
     let dateString = dayjs()
-    console.log(dateString)
     deliveryOptions.forEach((option)=>{
       if(option.id === cartItem.deliveryOptionId) {
         dateString = dateString.add(option.days,'day')
-        console.log(dateString)
       }
     })
 
@@ -87,10 +85,12 @@ function deliveryOptionsHTML(productId,cartItem){
     ?'FREE '
     :formatCurrency(option.priceCents)+' - '
 
-    const isChecked = option.id === cartItem.deliveryOptionId  
+    const isChecked = option.id === cartItem.deliveryOptionId
 
     deliveryHTML += `
-    <div class="delivery-option">
+    <div class="delivery-option js-delivery-option"
+    data-product-id="${productId}"
+    data-delivery-option-id="${option.id}">
       <input type="radio"
       ${isChecked?'checked':''}
         class="delivery-option-input"
@@ -146,8 +146,18 @@ document.querySelectorAll('.js-quantity-input')
   })
 })
 
+document.querySelectorAll('.js-delivery-option')
+.forEach((element)=>{
+  element.addEventListener('click',()=>{
+
+    const{productId, deliveryOptionId} = element.dataset
+
+    updateDeliveryOption(productId,Number(deliveryOptionId))
+  })
+
+})
+
 function saveChanges(link){
-  console.log(cart)
   const productId = link.dataset.productId
   const cartItemContainer = document.querySelector(`.js-cart-item-container-${productId}`)
   cartItemContainer.classList.remove('is-editing-quantity')
