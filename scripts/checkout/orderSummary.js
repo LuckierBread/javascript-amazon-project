@@ -1,84 +1,75 @@
 import {cart, updateDeliveryOption, getCartQuantity, updateCartQuantity, removeFromCart} from '../../data/cart.js'
-import {products} from '../../data/products.js'
+import {getProduct} from '../../data/products.js'
 import {formatCurrency} from '../utils/money.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'
-import {deliveryOptions} from '../../data/deliveryOptions.js'
+import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js'
 
 
-export function renderOrderSummery(){
-  let productListHTML = ''
-  const orderSummeryElement = document.querySelector(".js-order-summary")
+export function renderOrderSummary(){
+    let productListHTML = ''
+    const orderSummaryElement = document.querySelector(".js-order-summary")
 
-  //Generate HTML for each product container
-  cart.forEach((cartItem)=>{
-      let matchingItem
+    //Generate HTML for each product container
+    cart.forEach((cartItem)=>{
+    const product = getProduct(cartItem.id)
+    let dateString = dayjs()
+    const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId)
+    dateString = dateString.add(deliveryOption.days,'day')
 
-      products.forEach((product)=>{
-          if(product.id===cartItem.id)
-              matchingItem=product
-      })
-
-      let dateString = dayjs()
-      deliveryOptions.forEach((option)=>{
-        if(option.id === cartItem.deliveryOptionId) {
-          dateString = dateString.add(option.days,'day')
-        }
-      })
-
-      productListHTML+=`
-      <div class="cart-item-container js-cart-item-container-${matchingItem.id}">
-              <div class="delivery-date">
-                Delivery date: ${dateString.format('dddd, MMMM D')}
-              </div>
-
-              <div class="cart-item-details-grid">
-                <img class="product-image"
-                  src="${matchingItem.image}">
-
-                <div class="cart-item-details">
-                  <div class="product-name">
-                    ${matchingItem.name}
-                  </div>
-                  <div class="product-price">
-                    ${formatCurrency(matchingItem.priceCents)}
-                  </div>
-                  <div class="product-quantity">
-                    <span>
-                      Quantity: <span class="quantity-label js-quantity-label-${matchingItem.id}"
-                      data-product-id="${matchingItem.id}">
-                      ${cartItem.quantity}
-                      </span>
-                    </span>
-                    <span class="update-quantity-link link-primary js-update-quantity-link js-update-${matchingItem.id}" 
-                    data-product-id="${matchingItem.id}">
-                      Update
-                    </span>
-                    <input class="quantity-input js-quantity-input js-quantity-input-${matchingItem.id}"
-                    data-product-id="${matchingItem.id}">
-                    <span class="save-quantity-link js-save-quantity-link link-primary" 
-                    data-product-id="${matchingItem.id}">Save
-                    </span>
-                    <span class="delete-quantity-link link-primary js-delete-link"
-                    data-product-id="${matchingItem.id}">
-                      Delete
-                    </span>
-                  </div>
-                </div>
-
-                <div class="delivery-options">
-                  <div class="delivery-options-title">
-                    Choose a delivery option:
-                  </div>
-                  ${deliveryOptionsHTML(matchingItem.id,cartItem)}
-                </div>
-              </div>
+    productListHTML+=`
+    <div class="cart-item-container js-cart-item-container-${product.id}">
+            <div class="delivery-date">
+            Delivery date: ${dateString.format('dddd, MMMM D')}
             </div>
+
+            <div class="cart-item-details-grid">
+            <img class="product-image"
+                src="${product.image}">
+
+            <div class="cart-item-details">
+                <div class="product-name">
+                ${product.name}
+                </div>
+                <div class="product-price">
+                ${formatCurrency(product.priceCents)}
+                </div>
+                <div class="product-quantity">
+                <span>
+                    Quantity: <span class="quantity-label js-quantity-label-${product.id}"
+                    data-product-id="${product.id}">
+                    ${cartItem.quantity}
+                    </span>
+                </span>
+                <span class="update-quantity-link link-primary js-update-quantity-link js-update-${product.id}" 
+                data-product-id="${product.id}">
+                    Update
+                </span>
+                <input class="quantity-input js-quantity-input js-quantity-input-${product.id}"
+                data-product-id="${product.id}">
+                <span class="save-quantity-link js-save-quantity-link link-primary" 
+                data-product-id="${product.id}">Save
+                </span>
+                <span class="delete-quantity-link link-primary js-delete-link"
+                data-product-id="${product.id}">
+                    Delete
+                </span>
+                </div>
+            </div>
+
+            <div class="delivery-options">
+                <div class="delivery-options-title">
+                Choose a delivery option:
+                </div>
+                ${deliveryOptionsHTML(product.id,cartItem)}
+            </div>
+            </div>
+        </div>
       `
   })
 
   updateCartHeaderQuantity()
 
-  orderSummeryElement.innerHTML = productListHTML
+  orderSummaryElement.innerHTML = productListHTML
 
   //Delete button, removes order from cart.
   document.querySelectorAll('.js-delete-link')
@@ -119,7 +110,7 @@ export function renderOrderSummery(){
     element.addEventListener('click',()=>{
       const{productId, deliveryOptionId} = element.dataset
       updateDeliveryOption(productId,Number(deliveryOptionId))
-      renderOrderSummery()
+      renderOrderSummary()
     })
   })
 }
@@ -176,4 +167,4 @@ function updateCartHeaderQuantity(){
         document.querySelector(".js-cart-quantity").innerHTML = `${String(cartCount)} items`;
 }
 
-renderOrderSummery()
+renderOrderSummary()
