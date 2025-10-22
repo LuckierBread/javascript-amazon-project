@@ -4,6 +4,7 @@ import {formatCurrency} from '../utils/money.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'
 import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js'
 import{renderPaymentSummary} from './paymentSummary.js'
+import { renderCheckoutHeader } from './checkoutHeader.js'
 
 export function renderOrderSummary(){
     let productListHTML = ''
@@ -15,6 +16,8 @@ export function renderOrderSummary(){
     let dateString = dayjs()
     const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId)
     dateString = dateString.add(deliveryOption.days,'day')
+
+    renderCheckoutHeader()
 
     productListHTML+=`
     <div class="cart-item-container js-cart-item-container-${product.id}">
@@ -67,8 +70,6 @@ export function renderOrderSummary(){
       `
   })
 
-  updateCartHeaderQuantity()
-
   orderSummaryElement.innerHTML = productListHTML
 
   //Delete button, removes order from cart.
@@ -77,7 +78,8 @@ export function renderOrderSummary(){
       link.addEventListener('click',()=>{
           const productId = link.dataset.productId
           removeFromCart(productId)
-          renderOrderSummary()
+          renderCheckoutHeader()
+          renderOrderSummary()  
           renderPaymentSummary()
       })
   })
@@ -160,13 +162,8 @@ function saveChanges(link){
 
   const quantityElement = document.querySelector(`.js-quantity-label-${productId}`)
   quantityElement.innerHTML = newValue
-  updateCartHeaderQuantity()
+  renderCheckoutHeader()
   renderPaymentSummary()
-}
-
-function updateCartHeaderQuantity(){
-  const cartCount = getCartQuantity();
-        document.querySelector(".js-cart-quantity").innerHTML = `${String(cartCount)} items`;
 }
 
 renderOrderSummary()
