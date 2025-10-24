@@ -1,4 +1,4 @@
-import {cart, updateDeliveryOption, getCartQuantity, updateCartQuantity, removeFromCart} from '../../data/cart.js'
+import {cart, updateDeliveryOption, updateCartQuantity, removeFromCart} from '../../data/cart.js'
 import {getProduct} from '../../data/products.js'
 import {formatCurrency} from '../utils/money.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'
@@ -20,7 +20,7 @@ export function renderOrderSummary(){
     renderCheckoutHeader()
 
     productListHTML+=`
-    <div class="cart-item-container js-cart-item-container-${product.id}">
+    <div class="cart-item-container js-cart-item-container js-cart-item-container-${product.id}">
             <div class="delivery-date">
             Delivery date: ${dateString.format('dddd, MMMM D')}
             </div>
