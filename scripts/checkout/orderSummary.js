@@ -18,7 +18,6 @@ export function renderOrderSummary(){
     dateString = dateString.add(deliveryOption.days,'day')
 
     renderCheckoutHeader()
-    console.log(product)
 
     productListHTML+=`
     <div class="cart-item-container js-cart-item-container js-cart-item-container-${product.id}">
