@@ -5,15 +5,17 @@ import { loadCart } from '../data/cart.js'
 
 
 async function loadPage(){
-    await loadProductsFetch()
-    await loadCart()
+    try{
+        await loadProductsFetch()
+        await loadCart()
+    } 
+    catch(error){
+        console.log('ops intercepted the package')
+    }
     renderOrderSummary()
     renderPaymentSummary()
 }
 loadPage()
-
-
-
 
 // Promise.all([
 //     loadProductsFetch(),
