@@ -2,6 +2,7 @@ import {cart, getCartQuantity} from '../../data/cart.js'
 import {getProduct} from '../../data/products.js'
 import{getDeliveryOption} from '../../data/deliveryOptions.js'
 import { formatCurrency } from '../utils/money.js'
+import { addOrder } from '../../data/orders.js'
 
 export function renderPaymentSummary(){
     let productsCostCents = 0
@@ -60,9 +61,37 @@ export function renderPaymentSummary(){
             </div>
         </div>
 
-        <button class="place-order-button button-primary">
+        <button class="place-order-button button-primary
+        js-place-order">
         Place your order
         </button>
     `
     paymentSummaryElement.innerHTML = paymentSummaryHTML
+
+    document.querySelector('.js-place-order')
+    .addEventListener('click',async ()=>{
+        const cartForBackend = cart.map((cartItem)=>({
+            productId:cartItem.id,
+            quantity: cartItem.quantity,
+            deliveryOptionId:cartItem.deliveryOptionId
+        }))
+        console.log(cartForBackend)
+        try{
+            const response = await fetch('https://supersimplebackend.dev/orders',{
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cart: cartForBackend
+                })
+            })
+            const order = await response.json()
+            addOrder(order)
+        }catch(error){
+            console.log("something went wrong")
+        }
+
+        window.location.href = 'orders.html'
+    })
 }
