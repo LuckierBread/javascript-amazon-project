@@ -5,8 +5,6 @@ import { loadCart } from '../data/cart.js'
 
 
 async function loadPage(){
-    console.log('load page')
-
     await loadProductsFetch()
     await loadCart()
     renderOrderSummary()
