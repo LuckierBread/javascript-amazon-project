@@ -71,12 +71,8 @@ export function saveToStorage(){
     localStorage.setItem('cart',JSON.stringify(cart))
 }
 
-export function loadCart(fun){
+export function loadCart(){
   const xhr = new XMLHttpRequest()
-
-  xhr.addEventListener('load',()=>{
-    fun()
-    })
 
   xhr.open('GET','https://supersimplebackend.dev/cart')
   xhr.send()
