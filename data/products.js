@@ -64,7 +64,9 @@ export function loadProductsFetch(){
       }
       return new Product(productDetails)
     })
-  })
+  })/*.catch((error)=>{
+    console.log("my boi, the internet is broke")
+  })*/
 
   return promise
 }
@@ -82,6 +84,10 @@ export function loadProducts(fun){
       return new Product(productDetails)
     })
     fun()
+  })
+
+  xhr.addEventListener('error',(error)=>{
+    console.log("shit son, that wasn't supposed to happen")
   })
 
   xhr.open('GET','https://supersimplebackend.dev/products')
