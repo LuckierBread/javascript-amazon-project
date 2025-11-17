@@ -10,7 +10,7 @@ async function loadPage(){
         await loadCart()
     } 
     catch(error){
-        console.log('ops intercepted the package')
+        console.log('failed to load page')
     }
     renderOrderSummary()
     renderPaymentSummary()
