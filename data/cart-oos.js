@@ -19,12 +19,12 @@ function Cart(localStorageKey) {
         localStorage.setItem(localStorageKey,JSON.stringify(this.cartItems))
     },
 
-    addToCart(productId) {
+    addToCart(productId, quantity) {
         let itemInCart = false
 
         this.cartItems.forEach(item=>{
             if(item.id === productId){
-                item.quantity++;
+                item.quantity += quantity;
                 itemInCart = true;
             }
         })
@@ -32,11 +32,12 @@ function Cart(localStorageKey) {
         if(!itemInCart){
             this.cartItems.push({
                 id: productId,
-                quantity: 1,
+                quantity: quantity,
                 deliveryOptionId:0
             })
         }
         this.saveToStorage()
+        console.log(cart)
     },
 
     removeFromCart(productId){

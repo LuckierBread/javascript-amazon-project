@@ -16,12 +16,13 @@ cart = JSON.parse(localStorage.getItem('cart'))||[
 ]
 }
 
-export function addToCart(productId) {
+export function addToCart(productId, quantityValue) {
     let itemInCart = false
-
+    let quantity = Number(quantityValue);
+    
     cart.forEach(item=>{
         if(item.id === productId){
-            item.quantity++;
+            item.quantity+= quantity;
             itemInCart = true;
         }
     })
@@ -29,7 +30,7 @@ export function addToCart(productId) {
     if(!itemInCart){
         cart.push({
             id: productId,
-            quantity: 1,
+            quantity: quantity,
             deliveryOptionId:0
         })
     }
